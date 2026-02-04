@@ -13,4 +13,6 @@ Feature: Sales Management API (Standard User)
     When I attempt to create a sale for Plant ID 1 as a Standard User
     Then the response status code should be 403
 
-  
+  Scenario: Security: DELETE Sale - Forbidden (API_Us_03_214025B)
+    When I attempt to delete Sale ID 1 as a Standard User
+    Then the response status code should be 403
