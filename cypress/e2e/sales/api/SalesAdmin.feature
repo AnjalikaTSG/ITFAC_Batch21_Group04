@@ -20,7 +20,11 @@ Feature: Sales Management API
     Then the response status code should be 400
     And the response body should contain an error message
 
-   Scenario: POST Create Sale - Invalid Quantity (Zero/Negative) (API_Ad_04_214025B)
+  Scenario: POST Create Sale - Invalid Quantity (Zero/Negative) (API_Ad_04_214025B)
     When I attempt to sell Plant ID 1 with invalid quantity 0
     Then the response status code should be 400
     And the response body should contain an error message
+
+  Scenario: Verify Unauthorized Access (API_Ad_05_214025B)
+    When I attempt to create a sale for Plant ID 1 without an auth token
+    Then the response status code should be 401
