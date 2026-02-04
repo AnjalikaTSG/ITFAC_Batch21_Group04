@@ -29,3 +29,18 @@ Then("the data table should display the following columns:", (dataTable) => {
     cy.contains("th", colName).should("be.visible");
   });
 });
+
+// -------- Verify 'Sell Plant' Button Availability (UI_Ad_02_214025B)--------
+Then("the {string} button should be visible", (btnText) => {
+  cy.contains("button, a", btnText).should("be.visible");
+});
+
+Then("I should be redirected to the {string} page", (pageName) => {
+  if (pageName === "New Sale") {
+    cy.url().should("include", "/ui/sales/new");
+  } else if (pageName === "Sales") {
+    cy.url().should("include", "/ui/sales");
+  } else {
+    cy.log("Page URL check not defined for: " + pageName);
+  }
+});
