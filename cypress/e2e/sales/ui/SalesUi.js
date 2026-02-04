@@ -107,3 +107,19 @@ Then("the record should be deleted from the table", () => {
   cy.wait(500);
   cy.get("@confirmSpy").should("have.been.called");
 });
+
+// ---------------Verify Sales List View - Read Only (UI_Us_01_214025B)-------------
+Then("the {string} button should NOT be visible", (btnText) => {
+  cy.contains("button, a", btnText).should("not.exist");
+});
+
+Then("the {string} column should NOT be visible", (colName) => {
+  cy.contains("th", colName).should("not.exist");
+});
+
+// -----------------Verify Hidden Delete Actions (UI_Us_02_214025B)--------------------
+Then("the {string} button should NOT be visible in the table", (btnName) => {
+  cy.get("table tbody tr")
+    .find("button.btn-danger, .fa-trash")
+    .should("not.exist");
+});
