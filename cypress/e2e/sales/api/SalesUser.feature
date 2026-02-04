@@ -21,3 +21,7 @@ Feature: Sales Management API (Standard User)
     When I send a GET request for Sale ID 23 as a Standard User
     Then the response status code should be 200
     And the response body should contain a generated ID
+
+  Scenario: Security: Unauthorized Access - No Token (API_Us_05_214025B)
+    When I send a GET request to fetch all sales without an auth token
+    Then the response status code should be 401
