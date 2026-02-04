@@ -44,3 +44,18 @@ Then("I should be redirected to the {string} page", (pageName) => {
     cy.log("Page URL check not defined for: " + pageName);
   }
 });
+
+// --------- Verify Default Sorting by Sold Date (UI_Ad_03_214025B) ----------
+Then(
+  "the records should be sorted by {string} in descending order",
+  (columnName) => {
+    // Checks the 4th column (Sold At)
+    cy.get("table tbody tr td:nth-child(4)").then(($cells) => {
+      const dates = Cypress._.map($cells, (el) =>
+        new Date(el.innerText).getTime()
+      );
+      const sortedDates = [...dates].sort((a, b) => b - a);
+      expect(dates).to.deep.equal(sortedDates);
+    });
+  }
+);
