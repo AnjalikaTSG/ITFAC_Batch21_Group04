@@ -19,3 +19,8 @@ Feature: Sales Management UI
     Then the "Sell Plant" button should be visible
     When I click the "Sell Plant" button
     Then I should be redirected to the "New Sale" page
+
+  Scenario: Verify Default Sorting by Sold Date (UI_Ad_03_214025B)
+    # Precondition: Ensure there are at least 2 records to verify sorting
+    When I navigate to the Sales page
+    Then the records should be sorted by "Sold At" in descending order
