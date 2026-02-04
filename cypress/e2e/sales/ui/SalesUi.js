@@ -163,3 +163,34 @@ Then(
     });
   }
 );
+
+//--------------------Verify Sorting Functionality (User) (UI_Us_04_214025B)------------
+When("I click on the {string} column header", (colName) => {
+  cy.contains("th", colName).click();
+});
+
+Then(
+  "the records should be sorted by {string} in ascending order",
+  (colName) => {
+    // Determine which column index to check based on the name
+    let columnIndex;
+    if (colName === "Plant") columnIndex = 1;
+    else if (colName === "Quantity") columnIndex = 2;
+    else if (colName === "Total Price") columnIndex = 3;
+    else if (colName === "Sold At") columnIndex = 4;
+
+    // Grab all the cells in that column
+    cy.get(`table tbody tr td:nth-child(${columnIndex})`).then(($cells) => {
+      const values = Cypress._.map($cells, (el) => {
+        const text = el.innerText;
+        return isNaN(text) ? text : parseFloat(text);
+      });
+
+      // Create a sorted copy
+      const sortedValues = [...values].sort((a, b) => {
+        return typeof a === "number" ? a - b : a.localeCompare(b);
+      });
+      expect(values).to.deep.equal(sortedValues);
+    });
+  }
+);
