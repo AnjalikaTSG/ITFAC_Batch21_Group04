@@ -21,3 +21,9 @@ Feature: Sales Management (Standard User)
     When I navigate to the Sales page
     When I click on the "Quantity" column header
     Then the records should be sorted by "Quantity" in ascending order
+
+  Scenario: Verify Pagination Controls (User) (UI_Us_05_214025B)
+    When I navigate to the Sales page
+    Then the "Next" button should be visible
+    When I click the "Next" button
+    Then the "Previous" button should be visible
