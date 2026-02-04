@@ -8,3 +8,8 @@ Feature: Sales Management API
     When I send a POST request to "/api/sales/plant/{id}"
     Then the response status code should be 201
     And the response body should contain a generated ID
+
+  Scenario: Integration: Stock Reduction Check (API_Ad_02_214025B)
+    Given I check the current stock of Plant ID 1
+    When I create a sale for Plant ID 1 with Quantity 2
+    Then the stock of Plant ID 1 should be reduced by 2
