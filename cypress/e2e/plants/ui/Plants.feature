@@ -1,4 +1,4 @@
-Feature: Plant Management - Admin
+Feature: Plant Management - UI
 
   Scenario: Successfully add a plant with valid data
     Given I am logged in as admin
@@ -30,3 +30,26 @@ Scenario: User can view the Plant List with read-only access
   When I navigate to the Plant List page
   Then the paginated list of plants should be visible
   And no Add, Edit, or Delete controls should be present
+
+Scenario: User can search for a plant by name
+  Given I am logged in as a test user
+  And a plant named "Basil" exists in the list
+  When I search for the plant "Basil"
+  Then only the plant "Basil" should be visible in the list
+
+Scenario: User can sort the plant list by Price
+  Given I am logged in as a test user
+  And multiple plants with different prices exist
+  When I sort the plant list by Price
+  Then the plants should be ordered by Price
+
+Scenario: Add Plant button is hidden for Users
+  Given I am logged in as a test user
+  When I navigate to the Plant List page
+  Then the Add Plant button should not be visible
+
+Scenario: Access Denied when forcing URL for Edit Plant
+  Given I am logged in as a test user
+  And a plant with ID 1 exists
+  When I manually visit the Edit Plant page for ID 1
+  Then I should see an Access Denied page
