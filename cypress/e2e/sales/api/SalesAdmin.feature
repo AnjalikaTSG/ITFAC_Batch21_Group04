@@ -19,3 +19,8 @@ Feature: Sales Management API
     When I attempt to sell more than the available stock for Plant ID 1
     Then the response status code should be 400
     And the response body should contain an error message
+
+   Scenario: POST Create Sale - Invalid Quantity (Zero/Negative) (API_Ad_04_214025B)
+    When I attempt to sell Plant ID 1 with invalid quantity 0
+    Then the response status code should be 400
+    And the response body should contain an error message
