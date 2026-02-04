@@ -23,3 +23,50 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+
+// --- ADMIN LOGIN COMMAND ---
+Cypress.Commands.add("loginAdmin", () => {
+    cy.request({
+      method: "POST",
+      url: "/api/auth/login",
+      body: {
+        username: "admin",
+        password: "admin123"
+      }
+    }).then((response) => {
+      expect(response.status).to.eq(200);
+      Cypress.env("adminToken", response.body.token);
+    });
+  });
+  
+  // --- USER LOGIN COMMAND ---
+  Cypress.Commands.add("loginUser", () => {
+    cy.request({
+      method: "POST",
+      url: "/api/auth/login",
+      body: {
+        username: "testuser",
+        password: "test123"
+      },
+      failOnStatusCode: false
+    }).then((response) => {
+      expect(response.status).to.eq(200);
+      Cypress.env("userToken", response.body.token);
+    });
+  });
+
+  // --- UI LOGIN COMMANDS ---
+
+Cypress.Commands.add("loginAdminUI", () => {
+    cy.visit("/ui/login");
+    cy.get('input[name="username"]').type("admin");
+    cy.get('input[name="password"]').type("admin123");
+    cy.get('button[type="submit"]').click();
+  });
+  
+  Cypress.Commands.add("loginUserUI", () => {
+    cy.visit("/ui/login");
+    cy.get('input[name="username"]').type("testuser");
+    cy.get('input[name="password"]').type("test123");
+    cy.get('button[type="submit"]').click();
+  });
