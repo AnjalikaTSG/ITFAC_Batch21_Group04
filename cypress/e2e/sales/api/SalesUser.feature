@@ -16,3 +16,8 @@ Feature: Sales Management API (Standard User)
   Scenario: Security: DELETE Sale - Forbidden (API_Us_03_214025B)
     When I attempt to delete Sale ID 1 as a Standard User
     Then the response status code should be 403
+
+  Scenario: GET Specific Sale by ID (API_Us_04_214025B)
+    When I send a GET request for Sale ID 23 as a Standard User
+    Then the response status code should be 200
+    And the response body should contain a generated ID
