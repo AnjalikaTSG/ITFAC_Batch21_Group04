@@ -8,3 +8,9 @@ Feature: Sales Management API (Standard User)
     When I send a GET request to fetch all sales
     Then the response status code should be 200
     And the response body should be a list of sales
+
+  Scenario: Security: POST Create Sale - Forbidden (API_Us_02_214025B)
+    When I attempt to create a sale for Plant ID 1 as a Standard User
+    Then the response status code should be 403
+
+  
