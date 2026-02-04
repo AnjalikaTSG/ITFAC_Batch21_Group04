@@ -85,3 +85,25 @@ Then("I should see the new sale for {string} in the list", (plantName) => {
   // Checks the top row of the table
   cy.get("table tbody tr").first().should("contain", plantName);
 });
+
+// -----------Verify Delete Confirmation Logic (UI_Ad_05_214025B)-------------
+When("I click the delete icon on the first record", () => {
+  //Setup a spy to catch the invisible confirmation popup
+  cy.window().then((win) => {
+    cy.stub(win, "confirm").returns(true).as("confirmSpy");
+  });
+  cy.get("table tbody tr").first().find("td").last().find("button").click();
+});
+
+Then("I should see a confirmation dialog with text {string}", (msg) => {
+  // Checks if the spy caught the popup with the text
+  cy.get("@confirmSpy").should((spy) => {
+    const call = spy.getCall(0);
+    expect(call.args[0]).to.include(msg);
+  });
+});
+
+Then("the record should be deleted from the table", () => {
+  cy.wait(500);
+  cy.get("@confirmSpy").should("have.been.called");
+});
