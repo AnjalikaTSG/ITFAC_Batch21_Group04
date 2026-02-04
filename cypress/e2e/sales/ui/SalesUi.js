@@ -59,3 +59,29 @@ Then(
     });
   }
 );
+
+// --------- Create Sale - Happy Path (UI_Ad_04_214025B) ---------------------
+Given("I navigate to the {string} page", (pageName) => {
+  if (pageName === "New Sale") {
+    cy.visit("/ui/sales/new");
+  } else if (pageName === "Sales") {
+    cy.visit("/ui/sales");
+  }
+});
+
+When("I select {string} from the plant dropdown", (plantName) => {
+  cy.get("select option")
+    .contains(plantName, { matchCase: false })
+    .then(($option) => {
+      cy.get("select").select($option.text());
+    });
+});
+
+When("I enter quantity {string}", (qty) => {
+  cy.get('input[type="number"], input[name="quantity"]').type(qty);
+});
+
+Then("I should see the new sale for {string} in the list", (plantName) => {
+  // Checks the top row of the table
+  cy.get("table tbody tr").first().should("contain", plantName);
+});
