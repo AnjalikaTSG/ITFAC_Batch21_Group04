@@ -123,3 +123,43 @@ Then("the {string} button should NOT be visible in the table", (btnName) => {
     .find("button.btn-danger, .fa-trash")
     .should("not.exist");
 });
+
+// ----------------Direct URL Access - New Sale (UI_Us_03_214025B)-------------------
+When("I manually navigate to {string}", (url) => {
+  // turn off the automatic failure for non-200 codes so we can test 403 errors
+  cy.visit(url, { failOnStatusCode: false });
+});
+
+Then(
+  "I should be redirected to the {string} page or see a {string} error",
+  (pageName, errorCode) => {
+    cy.url().then((currentUrl) => {
+      if (currentUrl.includes("/login")) {
+        cy.log("Security Pass: Redirected to Login");
+        return;
+      }
+
+      // Check if we were redirected to Dashboard
+      if (currentUrl.includes("/dashboard") || currentUrl.endsWith("/ui/")) {
+        cy.log("Security Pass: Redirected to Dashboard");
+        return;
+      }
+
+      cy.get("body").then(($body) => {
+        if (
+          $body.text().includes("403") ||
+          $body.text().includes("Forbidden") ||
+          $body.text().includes("Access Denied")
+        ) {
+          cy.log("Security Pass: Saw 403 Error");
+          return;
+        }
+
+        // If none of the above happened, the security FAILED
+        throw new Error(
+          "SECURITY FAIL: Standard user accessed the restricted page!"
+        );
+      });
+    });
+  }
+);
