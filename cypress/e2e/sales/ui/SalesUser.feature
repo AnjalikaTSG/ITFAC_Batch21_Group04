@@ -16,3 +16,8 @@ Feature: Sales Management (Standard User)
   Scenario: Security: Direct URL Access - New Sale (UI_Us_03_214025B)
     When I manually navigate to "/ui/sales/new"
     Then I should be redirected to the "Login" page or see a "403" error
+
+  Scenario: Verify Sorting Functionality (User) (UI_Us_04_214025B)
+    When I navigate to the Sales page
+    When I click on the "Quantity" column header
+    Then the records should be sorted by "Quantity" in ascending order
