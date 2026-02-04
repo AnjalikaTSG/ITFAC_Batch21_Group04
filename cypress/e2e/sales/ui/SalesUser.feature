@@ -8,3 +8,7 @@ Feature: Sales Management (Standard User)
     When I navigate to the Sales page
     Then the "Sell Plant" button should NOT be visible
     And the "Actions" column should NOT be visible
+
+  Scenario: Verify Hidden Delete Actions (UI_Us_02_214025B)
+    When I navigate to the Sales page
+    Then the "Delete" button should NOT be visible in the table
