@@ -32,3 +32,9 @@ Feature: Sales Management UI
     And I click the "Sell" button
     Then I should be redirected to the "Sales" page
     And I should see the new sale for "anthurium" in the list
+
+  Scenario: Verify Delete Confirmation Logic (UI_Ad_05_214025B)
+    Given I navigate to the "Sales" page
+    When I click the delete icon on the first record
+    Then I should see a confirmation dialog with text "Are you sure you want to delete this sale?"
+    And the record should be deleted from the table
