@@ -13,3 +13,9 @@ Feature: Sales Management UI
       | Total Price |
       | Sold At     |
       | Actions     |
+
+  Scenario: Verify 'Sell Plant' Button Availability (UI_Ad_02_214025B)
+    When I navigate to the Sales page
+    Then the "Sell Plant" button should be visible
+    When I click the "Sell Plant" button
+    Then I should be redirected to the "New Sale" page
