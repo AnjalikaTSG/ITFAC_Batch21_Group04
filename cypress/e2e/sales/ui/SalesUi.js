@@ -18,3 +18,14 @@ When("I click the {string} button", (btnText) => {
   cy.contains("button, a", btnText).click();
 });
 
+// ----------------Verify Sales List Page Loading (UI_Ad_01_214025B)------------------
+Then("the {string} page header should be visible", (headerText) => {
+  cy.get("h1, h2, h3").contains(headerText).should("be.visible");
+});
+
+Then("the data table should display the following columns:", (dataTable) => {
+  const columns = dataTable.raw().flat();
+  columns.forEach((colName) => {
+    cy.contains("th", colName).should("be.visible");
+  });
+});
