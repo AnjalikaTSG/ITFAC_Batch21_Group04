@@ -24,3 +24,11 @@ Feature: Sales Management UI
     # Precondition: Ensure there are at least 2 records to verify sorting
     When I navigate to the Sales page
     Then the records should be sorted by "Sold At" in descending order
+
+  Scenario: Create Sale - Happy Path (UI_Ad_04_214025B)
+    Given I navigate to the "New Sale" page
+    When I select "anthurium" from the plant dropdown
+    And I enter quantity "2"
+    And I click the "Sell" button
+    Then I should be redirected to the "Sales" page
+    And I should see the new sale for "anthurium" in the list
