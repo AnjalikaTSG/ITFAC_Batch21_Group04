@@ -132,3 +132,19 @@ When("I send a GET request to fetch all sales", () => {
     }).as("apiResponse");
   });
 });
+
+//---------------POST Create Sale - Forbidden (API_Us_02_214025B)----------------
+When(
+  "I attempt to create a sale for Plant ID {int} as a Standard User",
+  (id) => {
+    cy.then(() => {
+      cy.request({
+        method: "POST",
+        url: `/api/sales/plant/${id}`,
+        headers: { Authorization: `Bearer ${userToken}` },
+        qs: { quantity: 1 },
+        failOnStatusCode: false,
+      }).as("apiResponse");
+    });
+  }
+);
