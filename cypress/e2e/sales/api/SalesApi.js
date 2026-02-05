@@ -103,3 +103,17 @@ When(
     });
   }
 );
+
+//--------------Verify Unauthorized Access (API_Ad_05_214025B)--------------
+When(
+  "I attempt to create a sale for Plant ID {int} without an auth token",
+  (id) => {
+    cy.request({
+      method: "POST",
+      url: `/api/sales/plant/${id}`,
+      // No Headers included here!
+      qs: { quantity: 1 },
+      failOnStatusCode: false,
+    }).as("apiResponse");
+  }
+);
