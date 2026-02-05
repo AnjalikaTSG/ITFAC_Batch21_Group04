@@ -70,3 +70,20 @@ When("I create a sale for Plant ID {int} with Quantity {int}", (id, qty) => {
     });
   });
 });
+
+// ------------POST Create Sale - Overselling Stock (Negative) (API_Ad_03_214025B)------
+When(
+  "I attempt to sell more than the available stock for Plant ID {int}",
+  (id) => {
+    cy.then(() => {
+      const excessiveQty = initialStock + 5;
+      cy.request({
+        method: "POST",
+        url: `/api/sales/plant/${id}`,
+        headers: { Authorization: `Bearer ${adminToken}` },
+        qs: { quantity: excessiveQty },
+        failOnStatusCode: false,
+      }).as("apiResponse");
+    });
+  }
+);
