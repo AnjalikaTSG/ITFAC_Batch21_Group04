@@ -160,3 +160,24 @@ When("I attempt to delete Sale ID {int} as a Standard User", (id) => {
     }).as("apiResponse");
   });
 });
+
+//---------------GET Specific Sale by ID (API_Us_04_214025B)--------------
+When("I send a GET request for Sale ID {int} as a Standard User", (id) => {
+  cy.then(() => {
+    cy.request({
+      method: "GET",
+      url: `/api/sales/${id}`,
+      headers: { Authorization: `Bearer ${userToken}` },
+      failOnStatusCode: false,
+    }).as("apiResponse");
+  });
+});
+
+//---------------Unauthorized Access - No Token (API_Us_05_214025B)-------
+When("I send a GET request to fetch all sales without an auth token", () => {
+  cy.request({
+    method: "GET",
+    url: "/api/sales",
+    failOnStatusCode: false,
+  }).as("apiResponse");
+});
