@@ -43,3 +43,30 @@ When("I send a POST request to {string}", () => {
   });
 });
 
+// --------------Integration: Stock Reduction Check (API_Ad_02_214025B)----------
+Given("I check the current stock of Plant ID {int}", (id) => {
+  cy.request({
+    method: "GET",
+    url: `/api/plants/${id}`,
+    headers: { Authorization: `Bearer ${adminToken}` },
+    failOnStatusCode: false,
+  }).then((response) => {
+    expect(response.status).to.eq(200);
+    initialStock = response.body.quantity;
+    cy.log("Initial Stock: " + initialStock);
+  });
+});
+
+When("I create a sale for Plant ID {int} with Quantity {int}", (id, qty) => {
+  cy.then(() => {
+    cy.request({
+      method: "POST",
+      url: `/api/sales/plant/${id}`,
+      headers: { Authorization: `Bearer ${adminToken}` },
+      qs: { quantity: qty },
+      failOnStatusCode: false,
+    }).then((response) => {
+      expect(response.status).to.be.oneOf([200, 201]);
+    });
+  });
+});
