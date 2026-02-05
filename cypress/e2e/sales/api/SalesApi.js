@@ -148,3 +148,15 @@ When(
     });
   }
 );
+
+//---------------DELETE Sale - Forbidden (API_Us_03_214025B)--------------------
+When("I attempt to delete Sale ID {int} as a Standard User", (id) => {
+  cy.then(() => {
+    cy.request({
+      method: "DELETE",
+      url: `/api/sales/${id}`,
+      headers: { Authorization: `Bearer ${userToken}` },
+      failOnStatusCode: false,
+    }).as("apiResponse");
+  });
+});
