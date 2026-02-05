@@ -87,3 +87,19 @@ When(
     });
   }
 );
+
+//-------------POST Create Sale - Invalid Quantity (Zero/Negative) (API_Ad_04_214025B)---
+When(
+  "I attempt to sell Plant ID {int} with invalid quantity {int}",
+  (id, badQty) => {
+    cy.then(() => {
+      cy.request({
+        method: "POST",
+        url: `/api/sales/plant/${id}`,
+        headers: { Authorization: `Bearer ${adminToken}` },
+        qs: { quantity: badQty },
+        failOnStatusCode: false,
+      }).as("apiResponse");
+    });
+  }
+);
