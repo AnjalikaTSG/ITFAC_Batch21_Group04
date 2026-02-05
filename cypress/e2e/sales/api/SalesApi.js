@@ -117,3 +117,18 @@ When(
     }).as("apiResponse");
   }
 );
+
+// USER ACTIONS
+// -------------GET Sales List - Authorized (API_Us_01_214025B)-----------
+When("I send a GET request to fetch all sales", () => {
+  cy.then(() => {
+    cy.request({
+      method: "GET",
+      url: "/api/sales",
+      headers: {
+        Authorization: `Bearer ${userToken}`,
+      },
+      failOnStatusCode: false,
+    }).as("apiResponse");
+  });
+});
