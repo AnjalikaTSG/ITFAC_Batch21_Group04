@@ -181,3 +181,51 @@ When("I send a GET request to fetch all sales without an auth token", () => {
     failOnStatusCode: false,
   }).as("apiResponse");
 });
+
+//COMMON ASSERTIONS
+Then("the response status code should be {int}", (statusCode) => {
+  cy.get("@apiResponse").then((response) => {
+    // Debug logging if it fails
+    if (response.status !== statusCode) {
+      cy.log(
+        `ERROR: Expected ${statusCode} but got ${response.status}. Body: ` +
+          JSON.stringify(response.body)
+      );
+    }
+    expect(response.status).to.eq(statusCode);
+  });
+});
+
+Then("the response body should contain a generated ID", () => {
+  cy.get("@apiResponse").then((response) => {
+    expect(response.body).to.have.property("id");
+  });
+});
+
+Then("the response body should contain an error message", () => {
+  cy.get("@apiResponse").then((response) => {
+    expect(response.body).to.not.be.null;
+  });
+});
+
+Then(
+  "the stock of Plant ID {int} should be reduced by {int}",
+  (id, amountSold) => {
+    cy.request({
+      method: "GET",
+      url: `/api/plants/${id}`,
+      headers: { Authorization: `Bearer ${adminToken}` },
+    }).then((response) => {
+      const currentStock = response.body.quantity;
+      const expectedStock = initialStock - amountSold;
+      expect(currentStock).to.eq(expectedStock);
+    });
+  }
+);
+
+// New Assertion for List validation
+Then("the response body should be a list of sales", () => {
+  cy.get("@apiResponse").then((response) => {
+    expect(response.body).to.be.an("array");
+  });
+});
