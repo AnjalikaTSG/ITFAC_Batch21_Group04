@@ -30,9 +30,7 @@ When("I send a POST request to {string} with admin credentials", (url) => {
 });
 
 Then("the response should contain a valid JWT token", () => {
-  expect(response.body).to.have.property("token"); // or accessToken
-  // basic check if it looks like a JWT
-  // expect(response.body.token).to.match(/^[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$/);
+  expect(response.body).to.have.property("token");
 });
 
 // --- API_Ad_02 ---
@@ -172,8 +170,6 @@ Given("I have a valid user token for User A", () => {
 
 When("I send a GET request to User B's data endpoint {string}", (url) => {
   cy.get("@userToken").then((token) => {
-    // In a real scenario, we'd replace IDs dynamically.
-    // For now use the URL provided in feature file
     cy.request({
       method: "GET",
       url: url,
@@ -197,9 +193,6 @@ Then(
 
 //---------------------sales api -------------------------
 Given("there are at least 20 sales records", () => {
-  // Check count or assume true.
-  // We can just proceed. If not enough, the test might fail on count check if we strictly expect 5.
-  // Ideally we would seed data here.
   cy.log("Assuming data exists");
 });
 
@@ -227,7 +220,6 @@ When(
 );
 
 Then("the response content should be a valid list", () => {
-  // Assuming Spring Data REST format: body.content or just body if list
   const items = response.body.content || response.body;
   expect(items).to.be.an("array");
 });
@@ -258,12 +250,9 @@ When(
 
 Then("the list should be sorted by Total Price descending", () => {
   const items = response.body.content || response.body;
-  // Check if sorted
-  // Assuming items have totalPrice property
   if (items.length > 1) {
     const first = items[0].totalPrice;
     const second = items[1].totalPrice;
-    // expect(first).to.be.at.least(second); // Descending
   }
 });
 
@@ -301,7 +290,6 @@ Then("the plants list should be sorted by Name ascending", () => {
     // expect(first <= second).to.be.true;
   }
 });
-
 
 //-----------Category API tests --------------------
 When("I send a POST request to {string} with invalid data type", (url) => {

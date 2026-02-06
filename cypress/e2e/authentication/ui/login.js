@@ -15,7 +15,7 @@ When(
     cy.get('input[id="password"], input[name="password"]')
       .clear()
       .type(password);
-  }
+  },
 );
 
 When("I click the login button r1", () => {
@@ -41,7 +41,7 @@ When(
       cy.contains("Invalid username or password").should("be.visible");
       cy.reload();
     }
-  }
+  },
 );
 
 When(
@@ -49,7 +49,7 @@ When(
   (username, password) => {
     cy.get('input[name="username"]').clear().type(username);
     cy.get('input[name="password"]').clear().type(password);
-  }
+  },
 );
 
 Then("I should see an error message {string}", (errorMessage) => {
@@ -57,7 +57,7 @@ Then("I should see an error message {string}", (errorMessage) => {
   cy.url().then((url) => {
     if (url.includes("/dashboard")) {
       throw new Error(
-        "Defect Found: Account Lockout failed. User was able to login after multiple failed attempts."
+        "Defect Found: Account Lockout failed. User was able to login after multiple failed attempts.",
       );
     }
   });
@@ -72,7 +72,7 @@ Then("I should see an error message {string}", (errorMessage) => {
       cy.log(
         "Note: Application displayed 'Invalid username or password' instead of expected '" +
           errorMessage +
-          "'"
+          "'",
       );
     }
   });
@@ -82,7 +82,7 @@ Then("I should remain on the login page", () => {
   cy.url().then((url) => {
     if (url.includes("/dashboard")) {
       throw new Error(
-        "Security Vulnerability Found: Account was NOT locked after 3 failed attempts! User was able to log in."
+        "Security Vulnerability Found: Account was NOT locked after 3 failed attempts! User was able to log in.",
       );
     }
     expect(url).to.include("/login");
@@ -121,7 +121,7 @@ Then("I should not be able to access the dashboard", () => {
   cy.get("body").then(($body) => {
     if ($body.text().includes("Dashboard")) {
       throw new Error(
-        "Security Fail: Dashboard is visible after logout + back"
+        "Security Fail: Dashboard is visible after logout + back",
       );
     }
   });
@@ -146,7 +146,7 @@ When("I initiate the Forgot Password workflow", () => {
     } else {
       // If the link is missing, fail the test explicitly to report the missing feature
       throw new Error(
-        "Defect: Forgot Password feature is missing on the Login Page."
+        "Defect: Forgot Password feature is missing on the Login Page.",
       );
     }
   });
@@ -167,7 +167,7 @@ When("I try to set a weak password {string}", (password) => {
 Then("I should see a password complexity error message", () => {
   // Verify error message exists
   cy.contains(/password.*complexity|weak password|requirement/i).should(
-    "exist"
+    "exist",
   );
 });
 
@@ -195,7 +195,7 @@ Then(
         .or("contain.text", "Forbidden")
         .or("contain.text", "403");
     });
-  }
+  },
 );
 
 //------------------Planning UI -----------------------
@@ -283,7 +283,6 @@ Given("a valid category exists", () => {
 });
 
 Given("a plant named {string} exists", (plantName) => {
-  // Ensure category exists first
   cy.visit("/ui/categories");
   cy.wait(500);
   cy.get("body").then(($body) => {
@@ -297,7 +296,6 @@ Given("a plant named {string} exists", (plantName) => {
     }
   });
 
-  // Check plants
   cy.visit("/ui/plants");
   cy.wait(500);
   cy.contains("table tbody tr", plantName).then(
@@ -320,9 +318,8 @@ Given("a plant named {string} exists", (plantName) => {
         cy.contains(plantName).should("be.visible");
       }
     },
-    { timeout: 10000 }
-  ); // Handle if not found - Cypress fails if not found in contains.
-  // Better approach: check body text or list
+    { timeout: 10000 },
+  );
   cy.get("body").then(($body) => {
     if (!$body.text().includes(plantName)) {
       cy.log(`Creating Plant ${plantName}...`);

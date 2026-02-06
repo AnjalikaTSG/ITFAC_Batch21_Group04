@@ -8,6 +8,11 @@ Feature: Sales Management API (Standard User)
     When I send a GET request to fetch all sales
     Then the response status code should be 200 s2
     And the response body should be a list of sales
+    
+Scenario: GET Specific Sale by ID (API_Us_04_214025B)
+    When I send a GET request for Sale ID 1 as a Standard User
+    Then the response status code should be 200 s2
+    And the response body should contain a generated ID
 
   Scenario: Security: POST Create Sale - Forbidden (API_Us_02_214025B)
     When I attempt to create a sale for Plant ID 1 as a Standard User
@@ -17,10 +22,6 @@ Feature: Sales Management API (Standard User)
     When I attempt to delete Sale ID 1 as a Standard User
     Then the response status code should be 403 s2
 
-  Scenario: GET Specific Sale by ID (API_Us_04_214025B)
-    When I send a GET request for Sale ID 23 as a Standard User
-    Then the response status code should be 200 s2
-    And the response body should contain a generated ID
 
   Scenario: Security: Unauthorized Access - No Token (API_Us_05_214025B)
     When I send a GET request to fetch all sales without an auth token
