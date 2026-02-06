@@ -37,3 +37,40 @@ Feature: Authentication API
     Given I have a valid user token for User A
     When I send a DELETE request to "/api/sales/999" with the user token
     Then I should receive a 403 Forbidden or 404 Not Found status
+
+
+Feature: Sales API
+
+  @API_Ad_04_214064R
+  Scenario: GET Sales List with Pagination
+    Given I have a valid admin token
+    And there are at least 20 sales records
+    When I send a GET request to "/api/sales/page" with page "0" and size "5"
+    Then I should receive a 200 OK status
+    And the response content should be a valid list
+
+  @API_Us_04_214064R
+  Scenario: GET Sales with Filter Params
+    Given I have a valid user token
+    When I send a GET request to sales endpoint "/api/sales/page" with sort "totalPrice,desc"
+    Then I should receive a 200 OK status
+    And the list should be sorted by Total Price descending
+
+Feature: Plants API
+
+  @API_Us_05_214064R
+  Scenario: Verify Sorting by Name
+    Given I have a valid user token
+    And there are multiple plants in the database
+    When I send a GET request to plants endpoint "/api/plants/paged" with sort "name,asc"
+    Then I should receive a 200 OK status
+    And the plants list should be sorted by Name ascending
+  
+Feature: Category API
+
+  @API_Ad_05_214064R
+  Scenario: API Error Handling (Global)
+    Given I have a valid admin token
+    When I send a POST request to "/api/categories" with invalid data type
+    Then I should receive a 400 Bad Request status
+    And the response should contain a clear error message
