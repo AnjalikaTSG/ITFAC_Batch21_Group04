@@ -67,7 +67,7 @@ Scenario: User can filter categories by parent ID
   Scenario: Admin can delete a plant by ID
       Given I am authenticated as Admin via API
       When I send a DELETE request to delete the plant by ID
-      Then the response status should be 200 sc9
+      Then the response status should be 204 sc9
 
   
   # -------- Scenario 10 --------

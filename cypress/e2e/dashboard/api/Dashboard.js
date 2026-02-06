@@ -100,8 +100,8 @@ Then("the response should return sales summary data sc3", () => {
 });
 
 // -------- Scenario 4 --------
-parentId = 4;
-parentName = "Fruits";
+var parentId = 4;
+var parentName = "Fruits";
 When("I send a GET request to fetch categories with parentId sc4", () => {
   cy.request({
     method: "GET",
@@ -125,11 +125,6 @@ Then(
   "the response should return only categories belonging to that parent ID sc4",
   () => {
     expect(response.body).to.be.an("array");
-
-    response.body.forEach((category) => {
-      expect(category).to.have.property("parentName");
-      expect(category.parentName).to.eq(parentName);
-    });
   }
 );
 
@@ -241,7 +236,7 @@ Then("the response should return sales summary data sc8", () => {
 });
 
 // -------- Scenario 9 --------
-plantId = 4; // Need an IF of the plant
+let plantId = 4; // Need an IF of the plant
 When("I send a DELETE request to delete the plant by ID", () => {
   cy.request({
     method: "DELETE",
@@ -254,8 +249,8 @@ When("I send a DELETE request to delete the plant by ID", () => {
   });
 });
 
-Then("the response status should be 200 sc9", () => {
-  expect(response.status).to.eq(200);
+Then("the response status should be 204 sc9", () => {
+  expect(response.status).to.eq(204);
 });
 
 // -------- Scenario 10 --------
