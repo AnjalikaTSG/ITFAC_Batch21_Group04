@@ -18,7 +18,7 @@ When(
   }
 );
 
-When("I click the login button", () => {
+When("I click the login button r1", () => {
   cy.get('button[type="submit"]').click();
 });
 
@@ -199,7 +199,7 @@ Then(
 );
 
 //------------------Planning UI -----------------------
-Given("I navigate to the Plant List page", () => {
+Given("I navigate to the Plant List page r2", () => {
   cy.visit("/ui/plants");
 });
 

@@ -109,4 +109,3 @@ Cypress.Commands.add("loginUserUI", () => {
   cy.get('input[name="password"]').type("test123");
   cy.get('button[type="submit"]').click();
 });
-
