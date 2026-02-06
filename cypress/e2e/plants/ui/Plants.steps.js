@@ -83,35 +83,21 @@ Then('a name length validation error should be shown', () => {
   cy.url().should('include', '/ui/plants/add'); // Still on add page
 });
 
-
-Given('a plant named "DeleteMe" exists in the list', () => {
+//delete a plant by name - UI_Admin
+When('I delete the plant named {string}', (plantName) => {
   cy.visit('/ui/plants');
-  cy.get('body').then(($body) => {
-    if (!$body.text().includes('DeleteMe')) {
-      cy.contains('Add a Plant').click();
-      cy.get('input[name="name"]').clear().type('DeleteMe');
-      cy.get('select#categoryId').select(1); // Adjust as needed
-      cy.get('input[name="price"]').clear().type('10.00');
-      cy.get('input[name="quantity"]').clear().type('10');
-      cy.contains('button', 'Save').click();
-      cy.url().should('include', '/ui/plants');
-      cy.contains('DeleteMe').should('be.visible');
-    }
+  // Stub the confirmation dialog to auto-accept
+  cy.window().then((win) => {
+    cy.stub(win, 'confirm').returns(true);
+  });
+  cy.get('table').contains('td', plantName).parent('tr').within(() => {
+    cy.get('button[title="Delete"]').click();
   });
 });
 
-//delete the plant named "DeleteMe" - UI_Admin
-When('I delete the plant named "DeleteMe"', () => {
-  cy.get('table').contains('td', 'DeleteMe').parent('tr').within(() => {
-    cy.contains('Delete').click();
-  });
-  cy.get('table');
-  cy.contains('td', 'DeleteMe').then($el => {
-    if ($el.length) {
-      // Log a warning, but do not fail
-      Cypress.log({ name: 'Warning', message: '"DeleteMe" was not deleted. Backend issue.' });
-    }
-  });
+Then('the plant {string} should not be visible in the list', (plantName) => {
+  cy.visit('/ui/plants');
+  cy.get('table tbody').should('not.contain', plantName);
 });
 
 //paginated list of plants should be visible - UI_User
@@ -144,7 +130,11 @@ Then('no Add, Edit, or Delete controls should be present', () => {
 });
 
 Given('a plant named {string} exists in the list', (plantName) => {
-  cy.visit('/ui/plants');
+  cy.url().then((url) => {
+    if (!url.includes('/ui/plants')) {
+      cy.visit('/ui/plants');
+    }
+  });
   cy.get('body').then(($body) => {
     if (!$body.text().includes(plantName)) {
       cy.contains('Add a Plant').click();

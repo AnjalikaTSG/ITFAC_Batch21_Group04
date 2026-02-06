@@ -21,7 +21,8 @@ Scenario: Verify validation for Plant Name min length size
   Then a name length validation error should be shown
 
 Scenario: Verify deletion of an existing plant
-  Given a plant named "DeleteMe" exists in the list
+  Given I am logged in as admin
+  And a plant named "DeleteMe" exists in the list
   When I delete the plant named "DeleteMe"
   Then the plant "DeleteMe" should not be visible in the list
 
