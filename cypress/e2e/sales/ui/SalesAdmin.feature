@@ -26,7 +26,7 @@ Feature: Sales Management UI
     Then the records should be sorted by "Sold At" in descending order
 
   Scenario: Create Sale - Happy Path (UI_Ad_04_214025B)
-    Given I navigate to the "New Sale" page
+    Given I navigate to the "Sell Plant" page
     When I select "anthurium" from the plant dropdown
     And I enter quantity "2"
     And I click the "Sell" button
