@@ -125,20 +125,6 @@ When("I send a GET request to retrieve all plants", () => {
   });
 });
 
-When("I send a GET request to retrieve plants filtered by category ID {int}", (categoryId) => {
-  const headers = getHeaders(authToken);
-  cy.request({
-    method: "GET",
-    url: `${API_BASE_URL}/api/plants?categoryId=${categoryId}`,
-    headers: headers,
-    failOnStatusCode: false
-  }).then((res) => {
-    response = res;
-    cy.log(`Response Status: ${res.status}`);
-    cy.log(`Response Body: ${JSON.stringify(res.body)}`);
-  });
-});
-
 When("I send a PUT request to update plant ID {int} with name {string} and price {float}", (plantId, newName, newPrice) => {
   const headers = getHeaders(authToken);
   const updateBody = {
@@ -189,13 +175,11 @@ When("I send a PUT request to update plant ID {int} with name {string}, price {f
   });
 });
 
-When("I send a GET request to retrieve plants filtered by category {string}", (category) => {
+When("I send a GET request to retrieve plants filtered by category ID {int}", (categoryId) => {
   const headers = getHeaders(authToken);
-  // If category is a name, map to ID if needed, else use name directly
-  // For now, fallback to category name param for compatibility
   cy.request({
     method: "GET",
-    url: `${API_BASE_URL}/api/plants?category=${category}`,
+    url: `${API_BASE_URL}/api/plants/category/${categoryId}`,
     headers: headers,
     failOnStatusCode: false
   }).then((res) => {
@@ -269,14 +253,14 @@ Then("the response body should be empty", () => {
   cy.log("✓ Response body is empty as expected");
 });
 
-Then("the response body should only contain plants in category {string}", (expectedCategory) => {
+Then("the response body should only contain plants in category ID {int}", (expectedCategoryId) => {
   expect(response.body).to.be.an("array");
   // Only check plants that have a category property and skip others
-  const filtered = response.body.filter(plant => plant.category && plant.category.name);
+  const filtered = response.body.filter(plant => plant.category && plant.category.id);
   filtered.forEach(plant => {
-    expect(plant.category.name.toLowerCase()).to.eq(expectedCategory.toLowerCase());
+    expect(plant.category.id).to.eq(expectedCategoryId);
   });
-  cy.log(`✓ All filtered plants belong to category: ${expectedCategory}`);
+  cy.log(`✓ All filtered plants belong to category ID: ${expectedCategoryId}`);
 });
 
 Then("the response body should contain a forbidden error message", () => {

@@ -53,9 +53,9 @@ Feature: Plants API - Admin Operations
   @API_Us_02_215011L @get @user
   Scenario: API_Us_02_215011L - Verify User can Filter Plants by Category via API
     Given I have a valid user authentication token
-    When I send a GET request to retrieve plants filtered by category "Roses"
+    When I send a GET request to retrieve plants filtered by category ID 1
     Then the response status code should be 200
-    And the response body should only contain plants in category "Roses"
+    And the response body should only contain plants in category ID 1
 
   @API_Us_03_215011L @post @user @forbidden
   Scenario: API_Us_03_215011L - Verify User is Forbidden from Adding Plants
