@@ -21,7 +21,8 @@ Scenario: Verify validation for Plant Name min length size
   Then a name length validation error should be shown
 
 Scenario: Verify deletion of an existing plant
-  Given a plant named "DeleteMe" exists in the list
+  Given I am logged in as admin
+  And a plant named "DeleteMe" exists in the list
   When I delete the plant named "DeleteMe"
   Then the plant "DeleteMe" should not be visible in the list
 
@@ -53,3 +54,14 @@ Scenario: Access Denied when forcing URL for Edit Plant
   And a plant with ID 1 exists
   When I manually visit the Edit Plant page for ID 1
   Then I should see an Access Denied page
+
+Scenario: Verify that an Admin cannot delete a plant that has sales records
+    Given User is logged as "admin" Role
+    And a plant named "test1" exists in the list
+    And a sales record exists for the plant "test1"
+    When User clicks on "Plants" in the sidebar
+    And User locates the Delete button for the plant "test1"
+    And User clicks the Delete button for "test1"
+    Then the application should display an error instead of deleting the plant
+    And the system should display the updated plant list
+    And the plant "test1" should still be visible in the list

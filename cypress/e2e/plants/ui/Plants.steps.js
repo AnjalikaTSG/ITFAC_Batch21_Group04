@@ -83,35 +83,21 @@ Then('a name length validation error should be shown', () => {
   cy.url().should('include', '/ui/plants/add'); // Still on add page
 });
 
-
-Given('a plant named "DeleteMe" exists in the list', () => {
+//delete a plant by name - UI_Admin
+When('I delete the plant named {string}', (plantName) => {
   cy.visit('/ui/plants');
-  cy.get('body').then(($body) => {
-    if (!$body.text().includes('DeleteMe')) {
-      cy.contains('Add a Plant').click();
-      cy.get('input[name="name"]').clear().type('DeleteMe');
-      cy.get('select#categoryId').select(1); // Adjust as needed
-      cy.get('input[name="price"]').clear().type('10.00');
-      cy.get('input[name="quantity"]').clear().type('10');
-      cy.contains('button', 'Save').click();
-      cy.url().should('include', '/ui/plants');
-      cy.contains('DeleteMe').should('be.visible');
-    }
+  // Stub the confirmation dialog to auto-accept
+  cy.window().then((win) => {
+    cy.stub(win, 'confirm').returns(true);
+  });
+  cy.get('table').contains('td', plantName).parent('tr').within(() => {
+    cy.get('button[title="Delete"]').click();
   });
 });
 
-//delete the plant named "DeleteMe" - UI_Admin
-When('I delete the plant named "DeleteMe"', () => {
-  cy.get('table').contains('td', 'DeleteMe').parent('tr').within(() => {
-    cy.contains('Delete').click();
-  });
-  cy.get('table');
-  cy.contains('td', 'DeleteMe').then($el => {
-    if ($el.length) {
-      // Log a warning, but do not fail
-      Cypress.log({ name: 'Warning', message: '"DeleteMe" was not deleted. Backend issue.' });
-    }
-  });
+Then('the plant {string} should not be visible in the list', (plantName) => {
+  cy.visit('/ui/plants');
+  cy.get('table tbody').should('not.contain', plantName);
 });
 
 //paginated list of plants should be visible - UI_User
@@ -144,7 +130,11 @@ Then('no Add, Edit, or Delete controls should be present', () => {
 });
 
 Given('a plant named {string} exists in the list', (plantName) => {
-  cy.visit('/ui/plants');
+  cy.url().then((url) => {
+    if (!url.includes('/ui/plants')) {
+      cy.visit('/ui/plants');
+    }
+  });
   cy.get('body').then(($body) => {
     if (!$body.text().includes(plantName)) {
       cy.contains('Add a Plant').click();
@@ -231,4 +221,124 @@ Then('I should see an Access Denied page', () => {
   cy.contains(/Access Denied|Forbidden/i).should('be.visible');
   // Optionally, check that the edit form is not present
   cy.get('form').should('not.exist');
+});
+
+// Verify system stability when attempting to delete a sold plant
+Given('a sales record exists for the plant {string}', (plantName) => {
+  // Check if a sales record already exists for this plant
+  cy.visit('/ui/sales');
+  
+  // Look for the plant name in the sales table
+  cy.get('body').then($body => {
+    if ($body.text().includes(plantName)) {
+      // Sales record already exists, no need to create
+      cy.log(`Sales record for ${plantName} already exists`);
+    } else {
+      // Create a sales record - look for the button
+      cy.get('body').then($page => {
+        if ($page.text().includes('Sell Plant')) {
+          cy.contains('Sell Plant').click();
+        } else if ($page.text().includes('Add a Sale')) {
+          cy.contains('Add a Sale').click();
+        } else {
+          cy.get('a[href*="/sales/add"]').first().click();
+        }
+      });
+      
+      cy.get('select#plantId').select(plantName);
+      cy.get('input[name="quantity"]').clear().type('1');
+      cy.contains('button', 'Save').click();
+    }
+  });
+});
+
+When('I attempt to delete the plant {string}', (plantName) => {
+  // Stub the confirmation dialog to auto-accept
+  cy.window().then((win) => {
+    cy.stub(win, 'confirm').returns(true);
+  });
+  cy.get('table').contains('td', plantName).parent('tr').within(() => {
+    cy.get('button[title="Delete"]').click();
+  });
+});
+
+Then('the system should not crash or show a 500 error', () => {
+  // Verify no 500 error or crash
+  cy.url().should('not.include', '500');
+  cy.get('body').should('not.contain', '500 Internal Server Error');
+  cy.get('body').should('not.contain', 'Application Error');
+});
+
+Then('a graceful validation message should be displayed', () => {
+  // Check for a validation message about referential integrity
+  cy.get('body').should('contain.text', 'Cannot delete plant');
+  cy.get('body').should('match', /Cannot delete plant.*sales|records exist.*sales|plant.*linked.*sales/i);
+});
+
+Then('the plant {string} should still be visible in the list', (plantName) => {
+  cy.visit('/ui/plants'); // Refresh the plant list
+  cy.get('table tbody').should('contain', plantName);
+  cy.contains(plantName).should('be.visible');
+});
+
+// Verify that an Admin cannot delete a plant that has sales records
+Given('User is logged as {string} Role', (role) => {
+  cy.visit('/ui/login');
+  if (role.toLowerCase() === 'admin') {
+    cy.get('input[name="username"]').type('admin');
+    cy.get('input[name="password"]').type('admin123');
+  } else {
+    cy.get('input[name="username"]').type('testuser');
+    cy.get('input[name="password"]').type('test123');
+  }
+  cy.get('button[type="submit"]').click();
+  cy.url().should('include', '/dashboard');
+});
+
+When('User clicks on {string} in the sidebar', (menuItem) => {
+  cy.contains(menuItem).click();
+  if (menuItem.toLowerCase() === 'plants') {
+    cy.url().should('include', '/ui/plants');
+  }
+});
+
+When('User locates the Delete button for the plant {string}', (plantName) => {
+  cy.get('table').contains('td', plantName).should('be.visible');
+});
+
+When('User clicks the Delete button for {string}', (plantName) => {
+  // Stub the confirmation dialog to auto-accept
+  cy.window().then((win) => {
+    cy.stub(win, 'confirm').returns(true);
+  });
+  cy.get('table').contains('td', plantName).parent('tr').within(() => {
+    cy.get('button[title="Delete"]').click();
+  });
+});
+
+Then('the application should display an error instead of deleting the plant', () => {
+  // Wait for any response/error message to appear
+  cy.wait(1000);
+  
+  // Verify the system did NOT crash with a 500 error (this should NOT happen)
+  cy.url().should('not.include', '500');
+  cy.get('body').should('not.contain', 'Whitelabel Error Page');
+  cy.get('body').should('not.contain', '500 Internal Server Error');
+  cy.get('body').should('not.contain', 'Internal Server Error');
+  cy.get('body').should('not.contain', 'status=500');
+  
+  // Verify a graceful error message is displayed instead
+  cy.get('body').should('match', /Cannot delete|Error deleting|constraint|foreign key|sales|records exist/i);
+  
+  // Verify we're still on or redirected to the plants page (not an error page)
+  cy.url().should('include', '/ui/plants');
+});
+
+Then('the system should display the updated plant list', () => {
+  // Verify the plant list table is visible
+  cy.get('table.table').should('be.visible');
+  cy.get('table tbody tr').should('have.length.greaterThan', 0);
+  
+  // Verify the page title/header is displayed
+  cy.contains('Plants').should('be.visible');
 });
