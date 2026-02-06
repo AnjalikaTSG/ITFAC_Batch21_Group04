@@ -54,3 +54,14 @@ Scenario: Access Denied when forcing URL for Edit Plant
   And a plant with ID 1 exists
   When I manually visit the Edit Plant page for ID 1
   Then I should see an Access Denied page
+
+Scenario: Verify that an Admin cannot delete a plant that has sales records
+    Given User is logged as "admin" Role
+    And a plant named "test1" exists in the list
+    And a sales record exists for the plant "test1"
+    When User clicks on "Plants" in the sidebar
+    And User locates the Delete button for the plant "test1"
+    And User clicks the Delete button for "test1"
+    Then the application should display an error instead of deleting the plant
+    And the system should display the updated plant list
+    And the plant "test1" should still be visible in the list
