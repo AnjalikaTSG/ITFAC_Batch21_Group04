@@ -4,7 +4,7 @@ Feature: Admin Authentication and Security
   Scenario: Admin Login - Valid Credentials
     Given I am on the login page
     When I enter username "admin" and password "admin123"
-    And I click the login button
+    And I click the login button r1
     Then I should be redirected to the admin dashboard
 
   @UI_Ad_02_214064R
@@ -12,7 +12,7 @@ Feature: Admin Authentication and Security
     Given I am on the login page
     When I enter username "admin" and incorrect password "wrongpass" 3 times consecutively
     And On the 4th attempt I enter username "admin" and password "admin123"
-    And I click the login button
+    And I click the login button r1
     Then I should see an error message "Account Locked"
     And I should remain on the login page
 
@@ -28,7 +28,7 @@ Feature: Admin Authentication and Security
   Scenario: User Login - Valid Credentials
     Given I am on the login page
     When I enter username "testuser" and password "test123"
-    And I click the login button
+    And I click the login button r1
     Then I should be redirected to the user dashboard
 
   @UI_Us_02_214064R
@@ -50,13 +50,13 @@ Feature: Admin Authentication and Security
     When I attempt to navigate to an admin-only URL "/ui/categories/add"
     Then I should be redirected to a non-admin page or see an Access Denied error
 
-Feature: Plant Management
+
 
   @UI_Ad_04_214064R
   Scenario: Verify Cancel button functionality on Edit Page
     Given I perform login as "admin"
     And a plant named "Rose" exists
-    And I navigate to the Plant List page
+    And I navigate to the Plant List page r2
     When I click the Edit button for plant "Rose"
     And I change the plant name to "Tulip"
     And I click the Cancel button
@@ -76,7 +76,7 @@ Feature: Plant Management
     Then I expect an error message "Price must be greater than 0"
 
 
-Feature: Category Management
+
 
   @UI_Us_05_214064R
   Scenario: No Add Button for User

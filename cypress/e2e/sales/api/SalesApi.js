@@ -6,13 +6,13 @@ let initialStock;
 let adminToken;
 let userToken;
 
-Given("I am authenticated as Admin via API", () => {
+Given("I am authenticated as Admin via API s1", () => {
   cy.loginAdmin().then(() => {
     adminToken = Cypress.env("adminToken");
   });
 });
 
-Given("I am authenticated as a Standard User via API", () => {
+Given("I am authenticated as a Standard User via API s1", () => {
   cy.loginUser().then(() => {
     userToken = Cypress.env("userToken");
   });
@@ -183,7 +183,7 @@ When("I send a GET request to fetch all sales without an auth token", () => {
 });
 
 //COMMON ASSERTIONS
-Then("the response status code should be {int}", (statusCode) => {
+Then("the response status code should be {int} s2", (statusCode) => {
   cy.get("@apiResponse").then((response) => {
     // Debug logging if it fails
     if (response.status !== statusCode) {

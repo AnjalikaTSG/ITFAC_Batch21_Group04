@@ -39,7 +39,7 @@ Feature: Authentication API
     Then I should receive a 403 Forbidden or 404 Not Found status
 
 
-Feature: Sales API
+
 
   @API_Ad_04_214064R
   Scenario: GET Sales List with Pagination
@@ -56,7 +56,7 @@ Feature: Sales API
     Then I should receive a 200 OK status
     And the list should be sorted by Total Price descending
 
-Feature: Plants API
+
 
   @API_Us_05_214064R
   Scenario: Verify Sorting by Name
@@ -66,7 +66,7 @@ Feature: Plants API
     Then I should receive a 200 OK status
     And the plants list should be sorted by Name ascending
   
-Feature: Category API
+
 
   @API_Ad_05_214064R
   Scenario: API Error Handling (Global)
