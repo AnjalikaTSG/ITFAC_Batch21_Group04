@@ -25,7 +25,30 @@ INSERT INTO plants (id, name, price, quantity, category_id) VALUES
 (3, 'Basil', 3.00, 20, 1),         -- Search tests
 (4, 'Expensive Plant', 100.00, 5, 1), -- Sorting tests
 (5, 'anthurium', 15.00, 50, 2),    -- Sales tests
-(130, 'Plant 130', 50.00, 10, 1);  -- API Edit test
+(130, 'Plant 130', 50.00, 10, 1),  -- API Edit test
+(6, 'test1', 20.00, 100, 2),       -- Admin Delete Test (Sales dependency)
+(101, 'Plant 01', 10.00, 10, 1),
+(102, 'Plant 02', 10.00, 10, 1),
+(103, 'Plant 03', 10.00, 10, 1),
+(104, 'Plant 04', 10.00, 10, 1),
+(105, 'Plant 05', 10.00, 10, 1),
+(106, 'Plant 06', 10.00, 10, 1),
+(107, 'Plant 07', 10.00, 10, 1),
+(108, 'Plant 08', 10.00, 10, 1),
+(109, 'Plant 09', 10.00, 10, 1),
+(110, 'Plant 10', 10.00, 10, 1),
+(111, 'Plant 11', 10.00, 10, 1),
+(112, 'Plant 12', 10.00, 10, 1),
+(113, 'Plant 13', 10.00, 10, 1),
+(114, 'Plant 14', 10.00, 10, 1),
+(115, 'Plant 15', 10.00, 10, 1),
+(116, 'Plant 16', 10.00, 10, 1),
+(117, 'Plant 17', 10.00, 10, 1),
+(118, 'Plant 18', 10.00, 10, 1),
+(119, 'Plant 19', 10.00, 10, 1),
+(120, 'Plant 20', 10.00, 10, 1);
+
+
 
 -- Seed Sales
 INSERT INTO sales (id, quantity, sold_at, total_price, plant_id) VALUES
@@ -49,7 +72,10 @@ INSERT INTO sales (id, quantity, sold_at, total_price, plant_id) VALUES
 (18, 1, NOW(), 10.00, 1),
 (19, 1, NOW(), 10.00, 1),
 (20, 1, NOW(), 10.00, 1),
-(23, 1, NOW(), 10.00, 1);          -- Get Specific Sale by ID test
+(23, 1, NOW(), 10.00, 1),          -- Get Specific Sale by ID test
+(24, 1, NOW(), 20.00, 6);          -- Sale for 'test1' (Admin Delete Test)
+
+
 
 -- Re-enable FK checks
 SET FOREIGN_KEY_CHECKS = 1;

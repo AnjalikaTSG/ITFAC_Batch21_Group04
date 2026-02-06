@@ -65,3 +65,4 @@ Scenario: Verify that an Admin cannot delete a plant that has sales records
     Then the application should display an error instead of deleting the plant
     And the system should display the updated plant list
     And the plant "test1" should still be visible in the list
+

@@ -15,8 +15,8 @@ Feature: Sales Management API
     Then the stock of Plant ID 1 should be reduced by 1
 
   Scenario: POST Create Sale - Overselling Stock (Negative) (API_Ad_03_214025B)
-    Given I check the current stock of Plant ID 2
-    When I attempt to sell more than the available stock for Plant ID 2
+    Given I check the current stock of Plant ID 1
+    When I attempt to sell more than the available stock for Plant ID 1
     Then the response status code should be 400 s2
     And the response body should contain an error message
 

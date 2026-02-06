@@ -1,10 +1,5 @@
 import { Given, When, Then } from "@badeball/cypress-cucumber-preprocessor";
 
-let adminToken = "";
-let userToken = "";
-let refreshToken = "";
-let response = null;
-
 // --- API_Ad_01 ---
 
 When("I send a POST request to {string} with admin credentials", (url) => {
@@ -17,20 +12,14 @@ When("I send a POST request to {string} with admin credentials", (url) => {
     },
     failOnStatusCode: false,
   }).then((res) => {
-    response = res;
     cy.wrap(res).as("apiResponse");
-    if (res.body.token) {
-      adminToken = res.body.token;
-    }
-    // Assume access_token or token
-    if (res.body.accessToken) {
-      adminToken = res.body.accessToken;
-    }
   });
 });
 
 Then("the response should contain a valid JWT token", () => {
-  expect(response.body).to.have.property("token");
+  cy.get("@apiResponse").then((response) => {
+    expect(response.body).to.have.property("token");
+  });
 });
 
 // --- API_Ad_02 ---
@@ -45,14 +34,15 @@ When("I send a GET request to {string} with the token", (url) => {
       },
       failOnStatusCode: false,
     }).then((res) => {
-      response = res;
       cy.wrap(res).as("apiResponse");
     });
   });
 });
 
 Then("the response should contain admin data", () => {
-  expect(response.body).to.not.be.null;
+  cy.get("@apiResponse").then((response) => {
+    expect(response.body).to.not.be.null;
+  });
 });
 
 // --- API_Ad_03 ---
@@ -70,7 +60,6 @@ When("I send a POST request to {string} with the user token", (url) => {
       },
       failOnStatusCode: false,
     }).then((res) => {
-      response = res;
       cy.wrap(res).as("apiResponse");
     });
   });
@@ -86,7 +75,6 @@ When("I send a GET request to {string} with the user token", (url) => {
       },
       failOnStatusCode: false,
     }).then((res) => {
-      response = res;
       cy.wrap(res).as("apiResponse");
     });
   });
@@ -102,21 +90,20 @@ When("I send a DELETE request to {string} with the user token", (url) => {
       },
       failOnStatusCode: false,
     }).then((res) => {
-      response = res;
       cy.wrap(res).as("apiResponse");
     });
   });
 });
 
 Then("I should receive a {int} Forbidden status", (statusCode) => {
-  expect(response.status).to.eq(statusCode);
+  cy.get("@apiResponse").then((response) => {
+    expect(response.status).to.eq(statusCode);
+  });
 });
 
 // --- API_Us_01 ---
 
 Given("I have a valid refresh token", () => {
-  // Ensure we have logged in to get refresh token
-  if (refreshToken) return;
   cy.request({
     method: "POST",
     url: "/api/auth/login",
@@ -126,26 +113,29 @@ Given("I have a valid refresh token", () => {
     },
     failOnStatusCode: false,
   }).then((res) => {
-    refreshToken = res.body.refreshToken;
+    cy.wrap(res.body.refreshToken).as("refreshToken");
   });
 });
 
 When("I send a POST request to {string} with the refresh token", (url) => {
-  cy.request({
-    method: "POST",
-    url: url,
-    body: {
-      refreshToken: refreshToken,
-    },
-    failOnStatusCode: false,
-  }).then((res) => {
-    response = res;
-    cy.wrap(res).as("apiResponse");
+  cy.get("@refreshToken").then((refreshToken) => {
+    cy.request({
+      method: "POST",
+      url: url,
+      body: {
+        refreshToken: refreshToken,
+      },
+      failOnStatusCode: false,
+    }).then((res) => {
+      cy.wrap(res).as("apiResponse");
+    });
   });
 });
 
 Then("the response should contain a new access token", () => {
-  expect(response.body).to.have.property("accessToken").or.property("token");
+  cy.get("@apiResponse").then((response) => {
+    expect(response.body).to.have.property("accessToken").or.property("token");
+  });
 });
 
 // --- API_Us_02 (Reuse steps) ---
@@ -153,7 +143,6 @@ Then("the response should contain a new access token", () => {
 // --- API_Us_03 ---
 
 Given("I have a valid user token for User A", () => {
-  // Authenticate as User A (using default user credentials for now)
   cy.request({
     method: "POST",
     url: "/api/auth/login",
@@ -178,7 +167,6 @@ When("I send a GET request to User B's data endpoint {string}", (url) => {
       },
       failOnStatusCode: false,
     }).then((res) => {
-      response = res;
       cy.wrap(res).as("apiResponse");
     });
   });
@@ -187,7 +175,9 @@ When("I send a GET request to User B's data endpoint {string}", (url) => {
 Then(
   "I should receive a {int} Forbidden or {int} Not Found status",
   (s1, s2) => {
-    expect([s1, s2]).to.include(response.status);
+    cy.get("@apiResponse").then((response) => {
+      expect([s1, s2]).to.include(response.status);
+    });
   },
 );
 
@@ -212,7 +202,6 @@ When(
         },
         failOnStatusCode: false,
       }).then((res) => {
-        response = res;
         cy.wrap(res).as("apiResponse");
       });
     });
@@ -220,8 +209,10 @@ When(
 );
 
 Then("the response content should be a valid list", () => {
-  const items = response.body.content || response.body;
-  expect(items).to.be.an("array");
+  cy.get("@apiResponse").then((response) => {
+    const items = response.body.content || response.body;
+    expect(items).to.be.an("array");
+  });
 });
 
 // --- API_Us_04 ---
@@ -241,7 +232,6 @@ When(
         },
         failOnStatusCode: false,
       }).then((res) => {
-        response = res;
         cy.wrap(res).as("apiResponse");
       });
     });
@@ -249,11 +239,13 @@ When(
 );
 
 Then("the list should be sorted by Total Price descending", () => {
-  const items = response.body.content || response.body;
-  if (items.length > 1) {
-    const first = items[0].totalPrice;
-    const second = items[1].totalPrice;
-  }
+  cy.get("@apiResponse").then((response) => {
+    const items = response.body.content || response.body;
+    if (items.length > 1) {
+      const first = items[0].totalPrice;
+      const second = items[1].totalPrice;
+    }
+  });
 });
 
 Given("there are multiple plants in the database", () => {
@@ -275,7 +267,6 @@ When(
         },
         failOnStatusCode: false,
       }).then((res) => {
-        response = res;
         cy.wrap(res).as("apiResponse");
       });
     });
@@ -283,12 +274,14 @@ When(
 );
 
 Then("the plants list should be sorted by Name ascending", () => {
-  const items = response.body.content || response.body;
-  if (items.length > 1) {
-    const first = items[0].name.toLowerCase();
-    const second = items[1].name.toLowerCase();
-    // expect(first <= second).to.be.true;
-  }
+  cy.get("@apiResponse").then((response) => {
+    const items = response.body.content || response.body;
+    if (items.length > 1) {
+      const first = items[0].name.toLowerCase();
+      const second = items[1].name.toLowerCase();
+      // expect(first <= second).to.be.true;
+    }
+  });
 });
 
 //-----------Category API tests --------------------
@@ -298,25 +291,27 @@ When("I send a POST request to {string} with invalid data type", (url) => {
       method: "POST",
       url: url,
       body: {
-        name: 12345, // Sending number instead of string
+        id: "invalid_id", // Valid id type should be a number
       },
       headers: {
         Authorization: `Bearer ${token}`,
       },
       failOnStatusCode: false,
     }).then((res) => {
-      response = res;
       cy.wrap(res).as("apiResponse");
     });
   });
 });
 
 Then("I should receive a {int} Bad Request status", (statusCode) => {
-  expect(response.status).to.eq(statusCode);
+  cy.get("@apiResponse").then((response) => {
+    expect(response.status).to.eq(statusCode);
+  });
 });
 
 Then("the response should contain a clear error message", () => {
-  // Check if error message exists in body
-  const body = response.body;
-  expect(body.message || body.error).to.exist;
+  cy.get("@apiResponse").then((response) => {
+    const body = response.body;
+    expect(body.message || body.error).to.exist;
+  });
 });
