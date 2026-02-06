@@ -36,7 +36,7 @@ Then("the {string} button should be visible", (btnText) => {
 });
 
 Then("I should be redirected to the {string} page", (pageName) => {
-  if (pageName === "New Sale") {
+  if (pageName === "Sell Plant") {
     cy.url().should("include", "/ui/sales/new");
   } else if (pageName === "Sales") {
     cy.url().should("include", "/ui/sales");
@@ -62,7 +62,7 @@ Then(
 
 // --------- Create Sale - Happy Path (UI_Ad_04_214025B) ---------------------
 Given("I navigate to the {string} page", (pageName) => {
-  if (pageName === "New Sale") {
+  if (pageName === "Sell Plant") {
     cy.visit("/ui/sales/new");
   } else if (pageName === "Sales") {
     cy.visit("/ui/sales");
