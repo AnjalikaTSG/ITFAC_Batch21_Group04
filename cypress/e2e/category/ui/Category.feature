@@ -1,8 +1,8 @@
 Feature: Category UI tests for admin and user
 
-  # ----------------------------
+  
   # Admin UI scenarios (8)
-  # ----------------------------
+  
 
 #UI_Ad_01_214066B
   Scenario: Admin can add a main category successfully
@@ -88,9 +88,9 @@ Feature: Category UI tests for admin and user
     And I click the ID column header
     Then the category list should be sorted by ID in ascending or descending order
 
-  # ----------------------------
+  
   # User UI scenarios (5)
-  # ----------------------------
+  
 
 #UI_Us_01_214066B
   Scenario: User can view the category list

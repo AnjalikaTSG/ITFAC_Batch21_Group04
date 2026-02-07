@@ -36,8 +36,6 @@ When(
       cy.get('input[name="username"]').clear().type(username);
       cy.get('input[name="password"]').clear().type(password);
       cy.get('button[type="submit"]').click();
-      // Wait for error to appear before next attempt
-      // If the app doesn't show error, we might just proceed, but usually it shows "Invalid credentials"
       cy.contains("Invalid username or password").should("be.visible");
       cy.reload();
     }
@@ -53,7 +51,6 @@ When(
 );
 
 Then("I should see an error message {string}", (errorMessage) => {
-  // Check if we accidentally logged in (Security Vulnerability)
   cy.url().then((url) => {
     if (url.includes("/dashboard")) {
       throw new Error(
@@ -62,8 +59,6 @@ Then("I should see an error message {string}", (errorMessage) => {
     }
   });
 
-  // Relaxed assertion: The app might not implement "Account Locked".
-  // Check for either the expected message OR "Invalid username or password"
   cy.get("body").then(($body) => {
     if ($body.text().includes(errorMessage)) {
       cy.contains(errorMessage).should("be.visible");
@@ -117,7 +112,7 @@ Then("I should see the login page", () => {
 });
 
 Then("I should not be able to access the dashboard", () => {
-  // Even after back button, we should not see dashboard content or be redirected to login
+  // Even after back button
   cy.get("body").then(($body) => {
     if ($body.text().includes("Dashboard")) {
       throw new Error(
@@ -144,7 +139,6 @@ When("I initiate the Forgot Password workflow", () => {
     if ($body.find("a:contains('Forgot Password')").length > 0) {
       cy.contains("Forgot Password").click();
     } else {
-      // If the link is missing, fail the test explicitly to report the missing feature
       throw new Error(
         "Defect: Forgot Password feature is missing on the Login Page.",
       );
@@ -153,7 +147,6 @@ When("I initiate the Forgot Password workflow", () => {
 });
 
 When("I try to set a weak password {string}", (password) => {
-  // If we are on a forgot password/reset page
   cy.get("body").then(($body) => {
     if ($body.find('input[type="password"]').length > 0) {
       cy.get('input[type="password"]').first().type(password);
@@ -165,7 +158,6 @@ When("I try to set a weak password {string}", (password) => {
 });
 
 Then("I should see a password complexity error message", () => {
-  // Verify error message exists
   cy.contains(/password.*complexity|weak password|requirement/i).should(
     "exist",
   );
@@ -240,7 +232,7 @@ When("I select the first category", () => {
   cy.get("select").then(($select) => {
     const options = $select.find("option");
     if (options.length > 1) {
-      cy.wrap($select).select(options[1].value); // Select first real option
+      cy.wrap($select).select(options[1].value);
     } else {
       cy.wrap($select).select(options[0].value);
     }

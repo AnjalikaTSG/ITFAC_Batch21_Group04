@@ -1,8 +1,8 @@
 Feature: Category API tests for admin and user
 
-  # ----------------------------
+  
   # Admin API scenarios (6)
-  # ----------------------------
+  
 
 #API_Ad_01_214066B
   Scenario: Admin can create a main category successfully
@@ -45,9 +45,9 @@ Feature: Category API tests for admin and user
     When I send a GET request to the Category API endpoint without authorization
     Then the API response status should be 401
 
-  # ----------------------------
+  
   # User API scenarios (5)
-  # ----------------------------
+  
 
 #API_Us_01_214066B
   Scenario: User can get the category list
